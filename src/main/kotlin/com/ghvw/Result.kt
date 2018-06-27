@@ -1,16 +1,16 @@
 package com.ghvw
 
+fun <T> tryOf(operation: () -> T): Result<T, Exception> =
+        try { Ok(operation()) }
+        catch (e: Exception) { Err(e) }
+
 //out variance annotation makes T a covariant type parameter
-sealed class Result<out T, out E> {
-    companion object {
-        fun <T> of(operation: () -> T): Result<T, Exception> =
-            try { Ok(operation()) }
-            catch (e: Exception) { Err(e) }
-    }
-}
+sealed class Result<out T, out E>
 
 data class Ok<T>(val value: T) : Result<T, Nothing>()
 data class Err<E>(val error: E) : Result<Nothing, E>()
+
+
 
 fun <T, U, E> Result<T, E>.map(transform: (T) -> U): Result<U, E> {
     return when(this) {
